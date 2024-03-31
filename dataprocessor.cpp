@@ -4,43 +4,41 @@
 #include <vector>
 #include <regex>
 
-using namespace std;
-
 // Function to read the file content
-string readFile(const string& fileName) {
-    ifstream file(fileName);
-    stringstream buffer;
+std::string readFile(const std::string& fileName) {
+    std::ifstream file(fileName);
+    std::stringstream buffer;
     buffer << file.rdbuf();
     return buffer.str();
 }
 
 // Function to remove comments and excess spaces
-string removeCommentsAndSpaces(const string& code) {
-    string result;
-    regex commentRegex("(#.*?\\n)|(\\s+)");
-    result = regex_replace(code, commentRegex, " ");
+std::string removeCommentsAndSpaces(const std::string& code) {
+    std::string result;
+    std::regex commentRegex("(#.*?\\n)|(\\//s+)");
+    result = std::regex_replace(code, commentRegex, " ");
     return result;
 }
 
 // Tokenizer function
-vector<pair<string, string>> tokenize(const string& code) {
-    vector<pair<string, string>> tokens;
-    regex tokenRegex("(def|return|print)|([a-zA-Z_][a-zA-Z0-9_]*)|(=|\\+)|([\\(\\),:])|([0-9]+)");
-    auto words_begin = sregex_iterator(code.begin(), code.end(), tokenRegex);
-    auto words_end = sregex_iterator();
+std::vector<std::pair<std::string, std::string>> tokenize(const std::string& code) {
+    std::vector<std::pair<std::string, std::string>> tokens;
+    std::regex tokenRegex("(def|return|print)|([a-zA-Z_][a-zA-Z0-9_]*)|(=|\\+)|([\\(\\),:])|([0-9]+)");
+    auto words_begin = std::sregex_iterator(code.begin(), code.end(), tokenRegex);
+    auto words_end = std::sregex_iterator();
 
-    for (sregex_iterator i = words_begin; i != words_end; ++i) {
-        smatch match = *i;
-        string matchStr = match.str();
-        if (regex_match(matchStr, regex("def|return|print"))) {
+    for (std::sregex_iterator i = words_begin; i != words_end; ++i) {
+        std::smatch match = *i;
+        std::string matchStr = match.str();
+        if (std::regex_match(matchStr, std::regex("def|return|print"))) {
             tokens.push_back({"Keyword", matchStr});
-        } else if (regex_match(matchStr, regex("[a-zA-Z_][a-zA-Z0-9_]*"))) {
+        } else if (std::regex_match(matchStr, std::regex("[a-zA-Z_][a-zA-Z0-9_]*"))) {
             tokens.push_back({"Identifier", matchStr});
-        } else if (regex_match(matchStr, regex("=|\\+"))) {
+        } else if (std::regex_match(matchStr, std::regex("=|/\\+*"))) {
             tokens.push_back({"Operator", matchStr});
-        } else if (regex_match(matchStr, regex("[\\(\\),:]"))) {
+        } else if (std::regex_match(matchStr, std::regex("[\\(\\),:]"))) {
             tokens.push_back({"Delimiter", matchStr});
-        } else if (regex_match(matchStr, regex("[0-9]+"))) {
+        } else if (std::regex_match(matchStr, std::regex("[0-9]+"))) {
             tokens.push_back({"Literal", matchStr});
         }
     }
@@ -49,23 +47,23 @@ vector<pair<string, string>> tokenize(const string& code) {
 }
 
 // Function to print tokens in tabular form
-void printTokens(const vector<pair<string, string>>& tokens) {
-    cout << "Category\tTokens" << endl;
+void printTokens(const std::vector<std::pair<std::string, std::string>>& tokens) {
+    std::cout << "Category\tTokens" << std::endl;
     for (const auto& token : tokens) {
-        cout << token.first << "\t" << token.second << endl;
+        std::cout << token.first << "\t" << token.second << std::endl;
     }
 }
 
 int main() {
-    string fileName = "input.txt";
-    string fileContent = readFile(fileName);
+    std::string fileName = "input.txt";
+    std::string fileContent = readFile(fileName);
     
-    string codeWithoutComments = removeCommentsAndSpaces(fileContent);
-    cout << "Code after removing excess space and comments:" << endl;
-    cout << codeWithoutComments << endl << endl;
+    std::string codeWithoutComments = removeCommentsAndSpaces(fileContent);
+    std::cout << "Code after removing excess space and comments:" << std::endl;
+    std::cout << codeWithoutComments << std::endl << std::endl;
 
     auto tokens = tokenize(codeWithoutComments);
-    cout << "Tokenized code in tabular form:" << endl;
+    std::cout << "Tokenized code in tabular form:" << std::endl;
     printTokens(tokens);
 
     return 0;
